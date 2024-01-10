@@ -1,79 +1,108 @@
-import React, { useEffect, useState } from 'react'
-
-import Cardmovie from '../components/Cardmovie'
-import { FaStar} from "react-icons/fa6";
-import { getMovieDetail, getMovieList,searchMovie } from '../api'
-import MovieDetail from './DetailMovie';
-import { Navigate, useNavigate } from 'react-router-dom';
-
+import React, { useEffect, useState } from 'react';
+import { FaStar } from 'react-icons/fa6';
+import { getMovieList, searchAll } from '../api';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const [popularMovies, setPopularMovies] = useState([])
-  const imageurl = "https://image.tmdb.org/t/p/w500"
-  const navigate = useNavigate()
+  const [popularMovies, setPopularMovies] = useState([]);
+  const imageurl = 'https://image.tmdb.org/t/p/w500';
+  const navigate = useNavigate();
 
-    useEffect(() => {
+  useEffect(() => {
     getMovieList().then((result) => {
-      setPopularMovies(result)
-    })
-    }, [])
+      setPopularMovies(result);
+    });
+  }, []);
 
-    const PopularMovieList = () => {
-      return popularMovies.map((movie, i) => {
-        return(
-          <a className="card card-compact w-72 p-0 shadow-xl cursor-pointer" key={i} onClick={() => navigate(`/movie/${movie.id}`)}>
-          <figure>   <img className='Movie-image' src={`${imageurl}/${movie.poster_path}`} alt="" /></figure>
+  const PopularMovieList = () => {
+    return popularMovies.map((content, i) => {
+      const contentType = content.media_type || 'movie';
+      return (
+        <a
+          className="card card-compact w-72 p-0 shadow-xl cursor-pointer"
+          key={i}
+          onClick={() => {
+            if (contentType === 'tv') {
+              navigate(`/tv/${content.id}`);
+            } else {
+              navigate(`/${contentType}/${content.id}`);
+            }
+          }}
+        >
+          <figure>
+            <img className="Movie-image" src={`${imageurl}/${content.poster_path}`} alt="" />
+          </figure>
           <div className="card-body">
-            <h2 className="Movie-title font-bold text-lg ">{movie.title}</h2>
-            <p className='Movie-date'>{movie.release_date}</p>
+            <h2 className="Movie-title font-bold text-lg ">{content.title || content.name}</h2>
+            <p className="Movie-date">{content.release_date}</p>
             <div className="card-actions justify-center">
               <div className="flex justify center items-center gap-1">
-           <p className='Movie-rate'>{movie.vote_average} </p><FaStar color='orange'/>
-           </div>
-    </div>
-  </div>
-</a>
-        )
-      })
-    }
+                <p className="Movie-rate">{content.vote_average.toFixed(1)} </p>
+                <FaStar color="orange" />
+              </div>
+            </div>
+          </div>
+        </a>
+      );
+    });
+  };
 
-
-    const search = async (q) => {
-      try{
-        if (q.length > 3) {
-
-    
-        const querymovie = await searchMovie(q)
-        setPopularMovies(querymovie.results)
-       } 
-      }catch (error){
-        console.error('Error Searching Movies:', error)
+  const search = async (q) => {
+    try {
+      if (q.length > 3) {
+        const searchResults = await searchAll(q);
+        setPopularMovies(searchResults);
       }
-       
+    } catch (error) {
+      console.error('Error searching:', error);
     }
+  };
 
   return (
-    <div>
-      
-
-        <div className='flex justify-center flex-col '>
-        <button className="font-bold justify-center flex btn w-44 text-white bg-accent hover:bg-black" onClick={() => navigate(`/tvshow`)}>Series Search disini</button>
-          
-        <h1 className="font-bold">Movie</h1>
-      
-        <div className=' flex justify-center flex-col'>
-        <input type="text" placeholder="Search" className="input input-bordered rounded-3xl w-full max-w-xs h-10 mt-3  " 
-        onChange={({target}) => search(target.value)}
-        />
+    <div className="">
+      <div className="flex justify-center flex-col">
+        <div className="flex flex-row md:px-20 px-6">
+          <div className="flex mr-auto ">
+            <input
+              type="text"
+              placeholder="Search"
+              className="input input-error hover:border-red-600 border-gray-600 transition-all rounded-3xl w-[275px]  h-10 mt-3 "
+              onChange={({ target }) => search(target.value)}
+            />
+          </div>
+          <div className="gap-5 mt-5 ml-3 hidden lg:flex">
+            <p
+              className="font-bold justify-center flex  text-red-600  hover:text-red-900  transition-all cursor-pointer"
+              onClick={() => navigate(`/tvshow`)}
+            >
+              TV Shows
+            </p>
+            <p
+              className="font-bold justify-center flex  text-red-600  hover:text-red-900 transition-all cursor-pointer "
+              onClick={() => navigate(`/`)}
+            >
+              Popular
+            </p>
+            <p
+              className="font-bold justify-center flex  text-red-600  hover:text-red-900 transition-all cursor-pointer "
+              onClick={() => navigate(`/nowplaying`)}
+            >
+              Now Playing
+            </p>
+            <p
+              className="font-bold justify-center flex  text-red-600  hover:text-red-900 transition-all cursor-pointer "
+              onClick={() => navigate(`/upcoming`)}
+            >
+              Upcoming
+            </p>
+          </div>
+        </div>
         <div className="flex justify-center mt-5 gap-3  flex-wrap ">
-      
-          <PopularMovieList/>
-
+          <PopularMovieList />
         </div>
-        </div>
-        </div>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Dashboard
+export default Dashboard;
