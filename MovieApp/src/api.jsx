@@ -93,6 +93,28 @@ export const getTvCast = async (series_id) => {
 
 };
 
+export const getTvDiscover = async () => {
+  try {
+    const discoverTv = await axios.get(`${baseUrl}/discover/tv`, {
+      params: {
+        api_key: apikey,
+        include_adult: false,
+        include_null_first_air_dates: false,
+        language: "en-US",
+        page: 1,
+        sort_by: "popularity.desc",
+        with_networks: 213,
+      },
+    });
+
+    console.log({ DiscoverTv: discoverTv.data });
+    return discoverTv.data.results;
+  } catch (error) {
+    console.error('Error fetching TV discover data:', error);
+    throw error; // Handle the error as needed
+  }
+};
+
 export const getVideoTv = async (series_id) => {
   try {
     const TvVideo = await axios.get(`${baseUrl}/tv/${series_id}/videos?api_key=${apikey}`);
