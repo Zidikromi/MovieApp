@@ -10,71 +10,71 @@ import { useNavigate } from 'react-router-dom';
 import { FreeMode, Pagination } from 'swiper/modules';
 
 
-const PopularMovieList = () => {
-    const [popularMovies, setPopularMovies] = useState([]);
+const PopularTvList = () => {
+    const [popularTv, setpopularTv] = useState([]);
     const imageurl = 'https://image.tmdb.org/t/p/w500';
     const navigate = useNavigate();
 
     useEffect(() => {
-        getMovieList().then((result) => {
-          setPopularMovies(result);
+        getTvList().then((result) => {
+            setpopularTv(result);
         });
-      }, []);
-    
-    return (
-<Swiper
-  slidesPerView={1}
-  spaceBetween={10}
-  breakpoints={{
-    320: {
-      slidesPerView: 3,
-      spaceBetween: 130,
-    },
-    438: {
-      slidesPerView: 3,
-      spaceBetween: 50,
-    },
-    640: {
-      slidesPerView: 4,
-      spaceBetween: 120,
-    },
-  
-    768: {
-      slidesPerView: 4,
-      spaceBetween: 150,
-    },
+    }, []);
 
-    900: {
-      slidesPerView: 4,
-      spaceBetween: 20,
-    },
-    1024: {
-      slidesPerView: 4,
-      spaceBetween: 140,
-    },
-    1190: {
-      slidesPerView: 5,
-      spaceBetween: 240,
-    },
-    1440: {
-      slidesPerView: 5,
-      spaceBetween: 50,
-    },
-    1920:{
-      slidesPerView: 6,
-      spaceBetween: 10,
-    }
-  }}
-  modules={[Pagination]}
-  className="mySwiper mx-auto"
->
-  {popularMovies.map((content, i) => {
-    const contentType = content.media_type || 'movie';
     return (
-      <SwiperSlide key={i} className='p-5'>
-          <a
+        <Swiper
+            slidesPerView={1}
+            spaceBetween={10}
+            breakpoints={{
+                320: {
+                    slidesPerView: 3,
+                    spaceBetween: 130,
+                },
+                438: {
+                    slidesPerView: 3,
+                    spaceBetween: 50,
+                },
+                640: {
+                    slidesPerView: 4,
+                    spaceBetween: 120,
+                },
+
+                768: {
+                    slidesPerView: 4,
+                    spaceBetween: 150,
+                },
+
+                900: {
+                    slidesPerView: 4,
+                    spaceBetween: 20,
+                },
+                1024: {
+                    slidesPerView: 4,
+                    spaceBetween: 140,
+                },
+                1190: {
+                    slidesPerView: 5,
+                    spaceBetween: 240,
+                },
+                1440: {
+                    slidesPerView: 5,
+                    spaceBetween: 50,
+                },
+                1920: {
+                    slidesPerView: 6,
+                    spaceBetween: 10,
+                }
+            }}
+            modules={[Pagination]}
+            className="mySwiper mx-auto"
+        >
+            {popularTv.map((content, i) => {
+                const contentType = content.media_type || 'movie';
+                return (
+                    <SwiperSlide key={i} className='p-5'>
+                        <a
                             className="card card-compact rounded-sm bg-[#1a1a1a] w-40 h-[380px] sm:w-44 sm:h-[420px] md:h-[490px] md:w-56 lg:w-72 p-0 shadow-lg cursor-pointer lg:min-h-[580px] mx-auto transition-all duration-300 ease-in-out group"
-                            onClick={() => navigate(`/movie/${content.id}`)}
+                            onClick={() => navigate(`/tv/${content.id}`)}
                         >
                             <div
                                 className="card-image relative"
@@ -88,7 +88,7 @@ const PopularMovieList = () => {
                             >
                                 <div className="overlay absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-300 ">
                                     <div className="flex items-center gap-1 bg-gray-600 bg-opacity-50 md:w-14 w-12 rounded-sm transition-all duration-300 text-white">
-                                        <p className="Movie-rate font-light justify-center pl-2 md:text-sm text-xs">
+                                        <p className="Movie-rate font-bold justify-center pl-2 md:text-sm text-xs">
                                             {content.vote_average.toFixed(1)}
                                         </p>
                                         <FaStar color="orange" />
@@ -100,19 +100,19 @@ const PopularMovieList = () => {
                             <h2 className="Movie-title font-regular text-xs md:text-md lg:text-lg text-white mt-auto" >{content.title || content.name}</h2>
                                
                                 <p className="Movie-date md:text-sm lg:text-md text-xs text-white">
-                                {new Date(content.release_date).getFullYear()}
+                                    {content.release_date ? content.release_date : content.first_air_date && new Date(content.first_air_date).getFullYear()}
                                 </p>
                                 <div className="card-actions justify-center"></div>
                             </div>
                         </a>
-            </SwiperSlide>
+                    </SwiperSlide>
 
-            // 
-          );
-        })}
-      </Swiper>
+                    // 
+                );
+            })}
+        </Swiper>
     );
-  };
-  
+};
 
-  export default PopularMovieList
+
+export default PopularTvList

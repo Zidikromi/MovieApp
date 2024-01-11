@@ -46,6 +46,7 @@ export const searchTv = async (q) => {
       const tvResultsWithMediaType = tvResults.results.map((tv) => ({ ...tv, media_type: 'tv' }));
       // Combine TV and Movie results into an array
       const combinedResults = [...tvResultsWithMediaType, ...movieResults.results];
+      console.log({combinedResults: combinedResults})
   
       return combinedResults;
     } catch (error) {
@@ -92,6 +93,13 @@ export const getTvCast = async (series_id) => {
   return castTv.data;
 
 };
+
+export const getTvTrending = async () => {
+ 
+    const TvTrending = await axios.get(`${baseUrl}/trending/tv/day?api_key=${apikey}`);
+    console.log({ TrendingTv: TvTrending.data.results });
+    return TvTrending.data.results;
+}
 
 export const getTvDiscover = async () => {
   try {
